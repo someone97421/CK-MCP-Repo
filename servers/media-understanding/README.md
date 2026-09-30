@@ -4,25 +4,23 @@
 
 源码与更新：**https://github.com/someone97421/CK-MCP-Repo**。本服务位于 `servers/media-understanding`。
 
-## 安装
+## 独立安装
+
+需要 Node.js >=22.19.0 和 npm；通过 Git 获取仓库时还需要 Git。
 
 ```bash
- git clone https://github.com/someone97421/CK-MCP-Repo.git
- cd CK-MCP-Repo
- node scripts/install.mjs --server media-understanding
+git clone https://github.com/someone97421/CK-MCP-Repo.git
+cd CK-MCP-Repo/servers/media-understanding
+npm ci --ignore-scripts --no-audit --no-fund
 ```
 
-已在仓库内时直接运行最后一条即可；脚本会更新本仓库并安装锁定依赖。手动安装某个固定提交的依赖：
+已取得代码时，在本 MCP 目录执行 `npm ci --ignore-scripts --no-audit --no-fund` 即可。源码、`package.json`、锁文件、配置示例和许可证均在本目录内，可将整个目录复制到其他位置后独立安装，不依赖根目录脚本或其他 MCP。
 
-```bash
-npm --prefix servers/media-understanding ci --ignore-scripts --no-audit --no-fund
-```
-
-要求 Git、Node.js >=22.19.0、npm。安装脚本的下载方式、客户端增量装配及更新流程见仓库根目录 [README](../../README.md) 和 [INSTALL](../../INSTALL.md)。
+需要固定版本时，先在仓库中切换到所需提交，再安装本目录依赖。若希望自动更新代码并输出本机配置模板，也可在仓库根目录运行 `node scripts/install.mjs --server media-understanding`，具体见根目录 [安装说明](../../README.md) 和 [Agent 装配指南](../../INSTALL.md)。
 
 ## MCP 配置
 
-服务使用 stdio，命令为 `node`，参数为本机 `servers/media-understanding/server.mjs` 的绝对路径。安装脚本会输出正确路径；下方为占位示例，不要照搬目录或提交真实 Key：
+服务使用 stdio，由 MCP 客户端管理子进程，不额外启动 HTTP 后端。命令为 `node`，参数为本目录 `server.mjs` 的绝对路径；复制目录后使用新位置的绝对路径。下方为占位示例，不要照搬目录或提交真实 Key。客户端找不到 Node 时，将 `command` 改为 Node 可执行文件的绝对路径：
 
 ```json
 {
@@ -118,12 +116,26 @@ npm --prefix servers/media-understanding ci --ignore-scripts --no-audit --no-fun
 
 成功结果包含 `analysis`、`model`、来源类型、MIME、传输方式、`finish_reason`、用量、上传清理状态，以及 `video_bytes` 或 `audio_bytes`。JSON 模式额外返回 `analysis_json`。单份 API 响应最多读取 4 MB，不回传源 URL、源文件路径或媒体编码。
 
-## 验证范围
+## 更新与卸载
 
-提供 Node 原生模拟测试，覆盖输入、限额、MIME、请求构造、Files 清理和取消：
+通过 Git 安装时，在仓库根目录执行 `git pull --ff-only`，然后在本 MCP 目录执行 `npm ci --ignore-scripts --no-audit --no-fund`。本地改动或分支分叉需自行处理；复制目录安装时替换对应版本的源码并重新安装依赖。更新后在客户端重连此 MCP。
+
+卸载时先移除客户端中此 MCP 的配置并关闭对应子进程，再删除不再使用的服务目录，保留其他 MCP 和用户配置。
+
+## 开发与测试
+
+本目录单独维护依赖和测试，不需要构建仓库内其他项目。以下命令均在本目录执行：
 
 ```bash
-npm --prefix servers/media-understanding test
+npm start
+npm test
+npm run pack
 ```
 
-测试没有在本次迁仓时执行；真实模型分析和具体中转兼容性仍需使用接入点、Key、模型 ID 和小样本联调。安装成功不等于视频或音频理解已验证。
+`npm start` 前台启动 stdio 服务，通常由 MCP 客户端启动；`npm test` 运行 Node 原生模拟测试，覆盖输入、限额、MIME、请求构造、Files 清理和取消；`npm run pack` 生成本 MCP 的 npm 归档。归档不是 MCPB，解压后仍需安装依赖并配置 stdio。
+
+模拟测试不代表真实 API 联调。真实模型分析和具体中转兼容性需使用实际接入点、Key、模型 ID 和小样本验证；安装成功不等于视频或音频理解已验证。
+
+## 许可证
+
+本 MCP 使用 LGPL-3.0-only，见本目录 [LICENSE](LICENSE)。第三方依赖遵循各自许可证。
