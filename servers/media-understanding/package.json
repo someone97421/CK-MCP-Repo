@@ -1,0 +1,21 @@
+{
+  "name": "local-video-understanding-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "本地 Gemini 音视频理解 MCP",
+  "license": "LGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/someone97421/CK-MCP-Repo.git",
+    "directory": "servers/media-understanding"
+  },
+  "engines": { "node": ">=22.19.0" },
+  "files": ["server.mjs", "video.mjs", "README.md", "LICENSE", "mcp-config.example.json", ".env.example"],
+  "scripts": {
+    "start": "node server.mjs",
+    "pack": "npm pack --ignore-scripts",
+    "test": "node --test video.test.mjs"
+  },
+  "dependencies": { "@modelcontextprotocol/sdk": "^1.0.0" }
+}

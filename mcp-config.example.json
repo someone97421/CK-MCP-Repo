@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "ck-media-understanding": {
+      "command": "node",
+      "args": ["/ABSOLUTE/PATH/CK-MCP-Repo/servers/media-understanding/server.mjs"],
+      "env": {
+        "VIDEO_API_BASE_URL": "https://generativelanguage.googleapis.com",
+        "VIDEO_API_KEY": "YOUR_KEY",
+        "VIDEO_MODEL_ID": "YOUR_MODEL_ID",
+        "VIDEO_API_AUTH": "x-goog-api-key",
+        "VIDEO_TRANSPORT": "auto",
+        "VIDEO_TIMEOUT_SECONDS": "600"
+      }
+    },
+    "ck-litterbox": {
+      "command": "node",
+      "args": ["/ABSOLUTE/PATH/CK-MCP-Repo/servers/litterbox/server.mjs"]
+    }
+  }
+}

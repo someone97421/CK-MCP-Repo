@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "ck-litterbox": {
+      "command": "node",
+      "args": ["/ABSOLUTE/PATH/CK-MCP-Repo/servers/litterbox/server.mjs"]
+    }
+  }
+}
